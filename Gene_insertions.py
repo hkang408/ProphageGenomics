@@ -123,16 +123,21 @@ def automate():             # Used to locate gene ID of the genes of interest an
 
 def parser(ID):                 # This function is used to generate the fasta files that will be BLASTED
     a = open('/home3/hkang408/gene_insertions/'+str(ID), 'rU')
-    b = open(str(ID)+'_gene.fasta', 'w')
+
+
+    genome = ID[:ID.find('_gene')]
+    b = open(str(genome)+'_gene.fasta', 'w')
     
     for line in a:
         i = line.split('\t')
         contig = i[1].rstrip()
         pp = i[0].rstrip()
         genome = pp[:pp.find('_')]
+        number = pp[pp.find('pp_')+3:]
         for each in i[2:]:
+            each = each.rstrip()
             seq = get_seq(genome,each,contig)
-            b.write('>'+str(each)+'\n'+str(seq)+'\n')
+            b.write('>'+str(each)+'_'+str(number)+'\n'+str(seq)+'\n')
 
     b.close()
     
@@ -163,7 +168,7 @@ def write_fastas():
     import os
     directory = os.listdir('/home3/hkang408/gene_insertions/')
     for i in directory:
-        if i.startswith('g'):
+        if i.startswith('g.'):
             parser(i)
 
 
@@ -179,4 +184,3 @@ def _query(argA, argB):
     stdin=PIPE,
     stdout=PIPE)
     print pipe.communicate()[0]
-
