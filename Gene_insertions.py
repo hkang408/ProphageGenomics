@@ -184,3 +184,77 @@ def _query(argA, argB):
     stdin=PIPE,
     stdout=PIPE)
     print pipe.communicate()[0]
+
+
+def find_low_cov(): #this function will identify hits with low coverage per
+    import tempfile
+    a = open('check.txt', 'rU')
+
+    HASH = {}
+    
+    for line in a:
+        i = line.split('\t')
+        ID = i[0].rstrip()
+        PercID = i[4].rstrip()
+        subID = i[1].rstrip()
+        qlen = i[5].rstrip()
+        slen = i[11].rstrip()
+        position = find_nth(subID, '|', 2)
+        gbID = subID[subID.find('|')+1:int(position)]
+        
+        PerCov = float(qlen)/float(slen)
+
+        if PerCov < 0.6:
+            if float(PercID) > 95.0:
+                if ID not in HASH:
+                    HASH[ID] = (gbID, PerCov)
+                elif ID in HASH:
+                    temp = HASH[ID]
+                    HASH[ID] = temp + (gbID, PerCov)
+                    
+    for key in HASH:
+        if len(HASH[key]) > 5:
+            if '.peg' in key:
+                genome = key[:key.find('.peg')]
+            elif '.CDS' in key:
+                genome = key[:key.find('.CDS')]
+            else:
+                break
+            ID, SEQ = retrieve_AA_entrez(HASH[key][0])
+
+            print key+'\t'+HASH[key][0]
+            argB = '/home3/hkang408/pp_nt_flanks/'+str(genome)+'_flanks.fasta'
+            b = open('test.fasta', 'w')
+            b.write('>'+ID+'\n'+str(SEQ)+'\n')
+            b.close()
+            
+ #           tf = tempfile.NamedTemporaryFile()
+ #           tf.write(key+'\n'+str(SEQ))
+            _query('test.fasta', argB)
+
+    a.close()
+    
+
+def retrieve_AA_entrez(ID): # From blast results, retrieve the sequence for subsequent blast
+    from Bio import Entrez
+    Entrez.email = 'hkang408@gmail.com'
+    handle = Entrez.efetch(db = 'protein', id = ID, rettype = 'gb', retmode = 'xml')
+    records = Entrez.read(handle)
+
+    try:
+        SEQ = records[0]["GBSeq_sequence"]
+	ID = records[0]["GBSeq_primary-accession"]
+    except:
+        SEQ = ''
+
+ #   print ">"+records[0]["GBSeq_primary-accession"]+" "+records[0]["GBSeq_definition"]+"\n"+records[0]["GBSeq_sequence"]
+
+    return ID, SEQ
+
+def find_nth(haystack, needle, n):
+    start = haystack.find(needle)
+    while start >= 0 and n > 1:
+        start = haystack.find(needle, start+len(needle))
+        n -= 1
+    return start
+
