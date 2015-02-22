@@ -171,21 +171,6 @@ def write_fastas():
         if i.startswith('g.'):
             parser(i)
 
-
-def _query(argA, argB):
-    import subprocess
-    from subprocess import Popen, PIPE, STDOUT
-    pipe = Popen(['blastn',
-    '-query', argA,
-    '-subject', argB,
-    '-outfmt', '6',
-    '-word_size', '7',
-    '-dust', 'no'],
-    stdin=PIPE,
-    stdout=PIPE)
-    print pipe.communicate()[0]
-
-
 def find_low_cov(): #this function will identify hits with low coverage per
     import tempfile
     a = open('check.txt', 'rU')
@@ -220,12 +205,12 @@ def find_low_cov(): #this function will identify hits with low coverage per
                 genome = key[:key.find('.CDS')]
             else:
                 break
-            ID, SEQ = retrieve_AA_entrez(HASH[key][0])
+            SEQ = retrieve_AA_entrez(HASH[key][0])
 
             print key+'\t'+HASH[key][0]
             argB = '/home3/hkang408/pp_nt_flanks/'+str(genome)+'_flanks.fasta'
             b = open('test.fasta', 'w')
-            b.write('>'+ID+'\n'+str(SEQ)+'\n')
+            b.write('>'+key+'\n'+str(SEQ)+'\n')
             b.close()
             
  #           tf = tempfile.NamedTemporaryFile()
@@ -233,6 +218,8 @@ def find_low_cov(): #this function will identify hits with low coverage per
             _query('test.fasta', argB)
 
     a.close()
+
+
     
 
 def retrieve_AA_entrez(ID): # From blast results, retrieve the sequence for subsequent blast
@@ -243,13 +230,12 @@ def retrieve_AA_entrez(ID): # From blast results, retrieve the sequence for subs
 
     try:
         SEQ = records[0]["GBSeq_sequence"]
-	ID = records[0]["GBSeq_primary-accession"]
     except:
         SEQ = ''
 
  #   print ">"+records[0]["GBSeq_primary-accession"]+" "+records[0]["GBSeq_definition"]+"\n"+records[0]["GBSeq_sequence"]
 
-    return ID, SEQ
+    return SEQ
 
 def find_nth(haystack, needle, n):
     start = haystack.find(needle)
@@ -257,4 +243,19 @@ def find_nth(haystack, needle, n):
         start = haystack.find(needle, start+len(needle))
         n -= 1
     return start
+
+def _query(argA, argB):
+    import subprocess
+    from subprocess import Popen, PIPE, STDOUT
+    pipe = Popen(['tblastn',
+    '-query', argA,
+    '-subject', argB,
+    '-outfmt', '6',
+    '-word_size', '7',
+    '-seg', 'no'
+   ],             #        '-dust', 'no'
+    stdin=PIPE,
+    stdout=PIPE)
+    print pipe.communicate()[0]
+
 
