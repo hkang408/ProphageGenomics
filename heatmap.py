@@ -1,14 +1,3 @@
-def word_count(gene, h):
-    i = gene.split(' ')
-    for word in i:
-        if word not in h:
-            h[word] = 1
-        elif word in h:
-            value = int(h[word])
-            new_val = value + 1
-            h[word] = new_val
-    return h
-
 def phage_map(path, genome):    #h = hash of gene names
     counter = 0
     switch = 0
@@ -132,4 +121,44 @@ def ID(name):
     else:
         return 'O'
 
-automate()
+
+'''
+'''
+def pick(array):
+    GENELIST = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O']
+    for each in array:
+        if each in GENELIST:
+            GENELIST.remove(each)
+    
+    if 'A' not in GENELIST:
+        if len(GENELIST) < 10:
+            return 1
+        else:
+            return 0
+    else:
+        return 0
+
+def filter_heatmap():
+    a = open('genome_heatmapNR.txt', 'rU')
+    b = open('NR5_heatmap.txt', 'w')
+    for line in a:
+        line = line.rstrip()
+        i = line.split('\t')
+        genes = i[1:]
+        check = pick(genes)
+        if check == 1:
+            int_ = (genes.index('A')+1.0)/len(genes)
+            if int_ < 0.5:
+                b.write(line+'\n')
+            elif int_ >= 0.5:
+                b.write(i[0])
+                for each in reversed(genes):
+                    b.write('\t'+str(each))
+                b.write('\n')
+
+            
+            b.write(line+'\n')
+        elif check == 0:
+            pass
+        
+
