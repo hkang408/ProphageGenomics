@@ -155,9 +155,6 @@ def filter_heatmap():
                 for each in reversed(genes):
                     b.write('\t'+str(each))
                 b.write('\n')
-
-            
-            b.write(line+'\n')
         elif check == 0:
             pass
         
