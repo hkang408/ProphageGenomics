@@ -1,0 +1,67 @@
+def search(values, searchFor):
+    for k in values:
+        for v in values[k]:
+            if searchFor in v:
+                return True
+    return False
+
+def find_reccuring_hypothetical_genes():
+    a = open('blast_test.txt', 'rU')
+    H = {}
+    for line in a:
+        line = line.rstrip()
+        i = line.split('\t')
+        query = i[0]
+        subject = i[1]
+        Eval = float(i[2])
+        check_ = search(H,query)
+        if check_ == False:
+            if Eval < 1e-50:
+                if query not in H:
+                    H[query] = [subject]
+                elif query in H:
+                    H[query].append(subject)           
+        elif check_ == True:
+            pass
+        
+    return H
+
+def find_nth(haystack, needle, n):
+    start = haystack.find(needle)
+    while start >= 0 and n > 1:
+        start = haystack.find(needle, start+len(needle))
+        n -= 1
+    return start
+
+def get_seq(_genome_,_ID_):
+    import Bio
+    from Bio import SeqIO
+    handle = open('/home3/katelyn/KBase/prophages/SEED/'+str(_genome_)+'/'+str(_genome_)+'.gbk')
+    parse = SeqIO.parse(handle, 'genbank')
+    records = list(parse)
+    STR =''
+    for contig in records:
+        try:
+            for i in range(0, len(contig.features)):
+                try:
+                    ID =  contig.features[i].qualifiers['locus_tag'][0]
+                    if str(ID) == str(_ID_):
+                        STR = contig.features[i].qualifiers['translation'][0]
+                except:
+                    pass
+        except:
+            pass
+    handle.close()
+    return STR
+
+
+HASH = find_reccuring_hypothetical_genes()
+a = open('recurring_hypothetical_genes.txt', 'w')
+for ID in HASH:
+    if len(HASH[ID]) > 10:
+        x = find_nth(ID,'.',2)
+        GENOME = ID[:x]
+        SEQ = get_seq(GENOME, ID)
+        a.write('>'+str(ID)+'\n'+str(SEQ)+'\n')
+
+        
