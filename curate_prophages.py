@@ -1,3 +1,8 @@
+##  Takes in the PhiSpy output file "prophage_tbl.txt" as input, returns a summary file of all the 
+##  prophages found with a minimum of 5 genes
+##
+##
+
 def pp_get(path,name):
 
 # Setting all necessary parameters
@@ -191,7 +196,7 @@ def pp_get(path,name):
 def automate():
     a = open('complete_genomes.txt','U')
     b = open('pp_summary.txt', 'w')
-    b.write('Name\tpp count\tContig\tLength\tHypo Perc\tAT Perc\tIntegase ID\tIntegrase Position\tLeft Repeat\tRight Repeat\tRepeat Reason\n') 
+    b.write('Name\tpp count\tContig\tLength\tHypo Perc\tGC Perc\tIntegase ID\tIntegrase Position\tLeft Repeat\tRight Repeat\tRepeat Reason\n') 
     b.close()
     for i in a:
         i = i.strip()
@@ -203,16 +208,16 @@ def automate():
     return
 
 
-def get_AT(genome,contig,start,end):
+def get_GC(genome,contig,start,end):
     a = open('/home3/katelyn/KBase/prophages/SEED/'+str(genome)+'/contigs')
     irofile = iter(a)
     for line in a:
         if '>'+str(contig) == line.rstrip():
             sequence = next(irofile)
             SEQ = sequence[int(start):int(end)]
-            T = SEQ.count('T')
-            A = SEQ.count('A')
-            skew = (float(A)+float(T))/len(SEQ)
+            G = SEQ.count('G')
+            C = SEQ.count('C')
+            skew = (float(G)+float(C))/len(SEQ)
 
     return skew
 
