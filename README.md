@@ -2,7 +2,7 @@
 This will be the very first repo that contains the general scripts used to complete the project titled:
 # Comprehensive survey of Curated Prophage Genomes for the Characterization of Prophage Composition and Insertion Behavior. 
 
-This project has three aims:
+This project has four aims:
 
 1. To identify phage regions using the program PhiSpy (information at bottom of the page)
 2. To use identified phage regions for the characterization of general phage genome characterization (e.g. gene length, count, codon usage distribution, species distribution/divergence, Integrase alignments. 
