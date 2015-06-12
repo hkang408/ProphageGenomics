@@ -1,3 +1,11 @@
+### Section in progress (June 12th 2015)
+### Takes collection of hypothetical genes found in prophage region, blast (or BLAT/lastal) to find recurring genes in multiple prophages.
+### Then will create identity matrix of the set of similar genes to be compared with single copy genes of host, to check for deviations (or non-deviations)
+### This -might- lend suggestions to which hypothetical genes are more tightly conserved and .: more important to phage viability.
+
+
+
+
 def search(values, searchFor):
     for k in values:
         for v in values[k]:
