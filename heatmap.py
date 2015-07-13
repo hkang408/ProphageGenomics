@@ -176,3 +176,53 @@ def reorder():
 automate()
 filter_heatmap()
 reorder()
+
+def recircularize(): # Will reorder genes to ensure tail goes at end. 
+    a = open('NR5_heatmap.txt', 'rU')
+    b = open('ASM_heatmap.txt', 'w')
+    H = {}
+    for line in a:
+        line = line.rstrip()
+        i = line.split('\t')
+        SEQ = i[1:]
+        tail_pos = 0
+        cap_pos = 0
+        tail_count = 0
+        cap_count = 0
+        length = len(SEQ)
+        ID = i[0].rstrip()
+        H[ID] = length
+        for idx,gene in enumerate(SEQ):
+            if gene == 'C':
+                if tail_count == 0:
+                    cut_here = idx
+                pos = (float(idx)*1.0)/len(SEQ)
+                tail_pos = tail_pos + pos
+                tail_count +=1
+     #           print tail_pos
+            elif gene == 'B':
+                pos = (float(idx)*1.0)/len(SEQ)
+                cap_pos = cap_pos + pos
+                cap_count +=1
+     #           print 'cap' + str(cap_pos)
+    
+        tail_pos = tail_pos/tail_count
+        cap_pos = cap_pos/cap_count
+    
+        if tail_pos > cap_pos:
+            b.write(line+'\n')
+        elif tail_pos < cap_pos:
+            right = SEQ[cut_here:]
+            left = SEQ[:cut_here]
+            left.reverse()
+            right.reverse()
+            J = left +right
+            b.write(ID)
+            for k in left:
+                b.write('\t'+k)
+            for k in right:
+                b.write('\t'+k)
+            b.write('\n')
+            
+            
+    
