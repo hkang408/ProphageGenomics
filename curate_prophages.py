@@ -96,9 +96,7 @@ def pp_get(path,name):
                     start = i[3]
                 elif int(i[3]) > int(i[4]):
                     start = i[4]
-                else:
-                    print 'error in setting start position'
-                
+
             elif i[9].startswith('0'): # Reached the end of pp
                 count+=1
                 try:
