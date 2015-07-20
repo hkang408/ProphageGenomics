@@ -38,9 +38,6 @@ def pp_get(path,name):
                     start = i[3]
                 elif int(i[3]) > int(i[4]):
                     start = i[4]
-                else:
-                     print 'error in setting start position'
-                         
                 contig = i[2]
                 if 'INTEGRASE' in i[1].upper():        # Not all will have an integrase... and some may have multiple.
                     int_pos = pp_counter
@@ -56,9 +53,6 @@ def pp_get(path,name):
                     end = i[3]
                 elif int(i[3]) < int(i[4]):
                     end = i[4]
-                else:
-                     print 'error in setting end position'
-                
                 if 'INTEGRASE' in i[1].upper():        # Not all will have an integrase... and some may have multiple.
                     int_pos = pp_counter                # This would overwrite any pp found at beginning of integrase
                     int_id = i[0]               
@@ -73,7 +67,7 @@ def pp_get(path,name):
                 except:
                     pass
                 
-                if int(pp_counter) < 5:
+                if int(pp_counter) < 5:     # phispy bug
                     print str(i[0]) + ': Region too small.'
                     int_id = 0
                     int_pos = 0
@@ -115,7 +109,7 @@ def pp_get(path,name):
                 except:
                     pass
                 
-                if int(pp_counter) < 5:
+                if int(pp_counter) < 5: #phispy bug
                     int_id = 0
                     int_pos = 0
                     pp_counter = 0
@@ -150,7 +144,7 @@ def pp_get(path,name):
 def automate():
     a = open('complete_genomes.txt','U')
     b = open('pp_summary.txt', 'w')
-    b.write('Name\tpp count\tContig\tLength\tHypo Perc\tGC Perc\tIntegase ID\tIntegrase Position\tLeft Repeat\tRight Repeat\tRepeat Reason\n') 
+    b.write('Name\tpp count\tContig\tLength\tHypo Perc\tGC Perc\tIntegase ID\tIntegrase Position\n') 
     b.close()
     for i in a:
         i = i.strip()
